@@ -1,0 +1,426 @@
+{
+	"info": {
+		"_postman_id": "ec9bfd34-8373-40ed-b5e0-be11867ce663",
+		"name": "AlunoCursos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Alunos",
+			"item": [
+				{
+					"name": "Alunos/Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}Alunos",
+							"host": [
+								"{{URL}}Alunos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alunos/Get/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}Alunos/1",
+							"host": [
+								"{{URL}}Alunos"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alunos/Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"nome\": \"Benício Diego Yago Costa\",\r\n  \"cpf\": \"365.701.399-75\",\r\n  \"rg\": \"27.016.791-2\"\r\n}"
+						},
+						"url": {
+							"raw": "{{URL}}Alunos",
+							"host": [
+								"{{URL}}Alunos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alunos/Put/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"nome\": \"Benício Diego Costa\",\r\n  \"cpf\": \"365.701.399-75\",\r\n  \"rg\": \"27.016.791-2\"\r\n}"
+						},
+						"url": {
+							"raw": "{{URL}}Alunos/{id}",
+							"host": [
+								"{{URL}}Alunos"
+							],
+							"path": [
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alunos/Delete/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}Alunos/1",
+							"host": [
+								"{{URL}}Alunos"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alunos/Get/{id}/Inscricoes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}Alunos/2/Inscricoes",
+							"host": [
+								"{{URL}}Alunos"
+							],
+							"path": [
+								"2",
+								"Inscricoes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cursos",
+			"item": [
+				{
+					"name": "Cursos/Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}Cursos",
+							"host": [
+								"{{URL}}Cursos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cursos/Get/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}Cursos/1",
+							"host": [
+								"{{URL}}Cursos"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cursos/Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n  {\r\n    \"id\": 0,\r\n    \"nome\": \"Restful Básico\",\r\n    \"descricao\": \"Restful básico\",\r\n    \"professor\": \"Pedro Henrique\"\r\n  }"
+						},
+						"url": {
+							"raw": "{{URL}}Cursos",
+							"host": [
+								"{{URL}}Cursos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cursos/Put/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n  {\r\n    \"id\": 1,\r\n    \"nome\": \"Restful Básico\",\r\n    \"descricao\": \"Restful básico\\nPostman\\nWeb Api\",\r\n    \"professor\": \"Pedro Henrique\"\r\n  }"
+						},
+						"url": {
+							"raw": "{{URL}}Cursos/1",
+							"host": [
+								"{{URL}}Cursos"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cursos/Delete/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}Cursos/1",
+							"host": [
+								"{{URL}}Cursos"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cursos/Get/{id}/Inscricoes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}Cursos/2/Inscricoes",
+							"host": [
+								"{{URL}}Cursos"
+							],
+							"path": [
+								"2",
+								"Inscricoes"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0f4b5541-4b48-4e3b-97a9-cdd919fea443",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c6004c86-ff65-4044-8ae7-a3b66b6ffa3d",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Inscricoes",
+			"item": [
+				{
+					"name": "Inscricoes/Get/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}Inscricoes/1",
+							"host": [
+								"{{URL}}Inscricoes"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inscricoes/Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"id\": 0,\r\n\t\"idAluno\": 2,\r\n\t\"idCurso\": 2,\r\n\t\"inicio\": \"2018-11-06\",\r\n}"
+						},
+						"url": {
+							"raw": "{{URL}}Inscricoes",
+							"host": [
+								"{{URL}}Inscricoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inscricoes/Put/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n\t\"id\": 0,\r\n\t\"idAluno\": 1,\r\n\t\"idCurso\": 1,\r\n\t\"inicio\": \"2018-06-01\"\r\n}"
+						},
+						"url": {
+							"raw": "{{URL}}Inscricoes/{id}",
+							"host": [
+								"{{URL}}Inscricoes"
+							],
+							"path": [
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0f4b5541-4b48-4e3b-97a9-cdd919fea443",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c6004c86-ff65-4044-8ae7-a3b66b6ffa3d",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "test",
+			"script": {
+				"id": "2203816e-222b-4fe7-9773-f63c26a6ec50",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	]
+}
