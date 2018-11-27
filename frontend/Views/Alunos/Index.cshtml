@@ -1,0 +1,275 @@
+﻿
+<div class="card mb-3 d-none" id="formulario">
+    <div class="card-header">
+        <h3><i class="fa fa-wpforms"></i> <span id="TituloFormulario">Incluir</span></h3>
+    </div>
+
+    <div class="card-body">
+
+        <form onsubmit="salvarRegistro(this);">
+            <input type="hidden" name="id" />
+            <div class="row">
+                <div class="col-md-8 mb-2">
+                    <label for="nome">Nome</label>
+                    <input name="nome" type="text" class="form-control" placeholder="Nome do aluno" required="required">
+                    <div class="invalid-feedback"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <label for="cpf">CPF</label>
+                    <input name="cpf" type="text" class="form-control cpf" placeholder="CPF do aluno" required="required">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <label for="rg">RG</label>
+                    <input name="rg" type="text" class="form-control" placeholder="RG do aluno" required="required">
+                    <div class="invalid-feedback"></div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Enviar</button>
+            <button class="btn btn-primary" type="button" onclick="fecharFormulario();">Fechar</button>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h3><i class="fa fa-table"></i> Alunos</h3>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="grid" class="table table-bordered table-hover display dataTable no-footer" role="grid" aria-describedby="example1_info"></table>
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.js" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/js/jquery-dateformat.min.js")"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        var grid;
+        var url = "http://alunoscursos.qualifica.pro.br/api/alunos/";
+
+        function removerRegistro(id) {
+            if (!confirm("Deseja realmente remover este item?"))
+                return;
+
+            $.ajax({
+                url: url + id,
+                type: 'DELETE'
+            }).done(atualizarGrid);
+        }
+        function resetarValidacao(form) {
+            form.find(".is-invalid").removeClass("is-invalid");
+            form.find(".invalid-feedback").html("");
+        }
+
+        function limparFormulario(form) {
+
+            form.find("input").val("");
+
+            resetarValidacao(form);
+        }
+
+        function salvarRegistro(form) {
+            event.preventDefault();
+
+            form = $(form);
+
+            var valores = form.serializeArray();
+
+            var objeto = {};
+            $.each(valores, function (i, item) {
+                objeto[item.name] = item.value;
+            });
+
+            var valido = validacao(form, objeto);
+
+            if (valido) {
+                var metodo = "POST";
+                var endereco = url;
+
+                if (!objeto.id)
+                    objeto.id = 0;
+
+                if (objeto.id > 0) {
+                    metodo = "PUT";
+                    endereco += objeto.id;
+                }
+
+                $.ajax({
+                    url: endereco,
+                    type: metodo,
+                    data: JSON.stringify(objeto),
+                    contentType: 'application/json'
+                })
+                    .done(function () {
+                        fecharFormulario();
+                        atualizarGrid();
+                    })
+                    .fail(function (data) {
+                        console.log(data);
+                        alert(data.responseText);
+                    });
+            }
+        }
+
+        function validacao(form, entidade) {
+
+            var valido = true;
+
+            if (!entidade.nome) {
+                var controle = form.find("[name=nome]");
+                controle.addClass("is-invalid");
+                controle.next(".invalid-feedback").html("Nome deve ser informado");
+                valido = false;
+            }
+
+            if (!entidade.cpf) {
+                var controle = form.find("[name=cpf]");
+                controle.addClass("is-invalid");
+                controle.next(".invalid-feedback").html("CPF deve ser informado");
+                valido = false;
+            }
+
+            if (!entidade.rg) {
+                var controle = form.find("[name=rg]");
+                controle.addClass("is-invalid");
+                controle.next(".invalid-feedback").html("RG deve ser informado");
+                valido = false;
+            }
+
+            return valido;
+        }
+
+        function abrirFormulario() {
+            var container = $('#formulario');
+            var form = container.find("form");
+            limparFormulario(form);
+
+            container.removeClass('d-none');
+
+            return form;
+        }
+
+        function fecharFormulario() {
+
+            var container = $('#formulario');
+            var form = container.find("form");
+            limparFormulario(form);
+
+            container.addClass('d-none');
+        }
+
+        function incluirRegistro() {
+            event.preventDefault();
+            $("#TituloFormulario").html("Incluir");
+
+            abrirFormulario();
+        }
+
+        function editarRegistro(id) {
+            event.preventDefault();
+            $("#TituloFormulario").html("Editar");
+            abrirFormulario();
+
+            $.get(url + id).done(function (data) {
+                var container = $('#formulario');
+                var form = container.find("form");
+
+                data.inicio = $.format.date(data.inicio, "dd/MM/yyyy");
+                data.termino = $.format.date(data.termino, "dd/MM/yyyy");
+
+                form.data("item", data);
+
+                $.each(data, function (prop, valor) {
+                    form.find("[name=" + prop + "]").val(valor);
+                });
+            })
+        }
+
+        function atualizarGrid() {
+            $.get(url)
+                .done(function (data) {
+                    grid.clear();
+                    grid
+                        .rows
+                        .add(data)
+                        .draw();
+                });
+        }
+
+        $(document).ready(function () {
+            $('.cpf').mask('000.000.000-00');
+
+            $(".menu").removeClass("active");
+            $(".alunos").addClass("active");
+            $(".controller").html("Alunos");
+
+            grid = $('#grid').DataTable({
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bInfo": false,
+                "bAutoWidth": true,
+                data: [],
+                columns: [
+                    {
+                        title: "<a href=\"#\" onclick=\"incluirRegistro();\" title=\"Incluir\" class=\"fa fa-plus\">&nbsp;</a>",
+                        data: "id",
+                        width: "20px",
+                        render: function (data, type) {
+                            if (type === 'display') {
+
+                                var editar = '<a href="#" title="Editar" onclick="editarRegistro(' + data + ');" class="fa fa-pencil">&nbsp;</a>';
+                                var excluir = '<a href="#" title="Excluir" onclick="removerRegistro(' + data + ');" class="fa fa-remove">&nbsp;</a>';
+
+                                data = editar + '&nbsp;' + excluir;
+                            }
+
+                            return data;
+                        }
+                    },
+                    { title: "id", data: "id", width: "20px", },
+                    {
+                        title: "Nome",
+                        data: "nome"
+                    },
+                    {
+                        title: "CPF",
+                        data: "cpf"
+                    },
+                    {
+                        title: "RG",
+                        data: "rg"
+                    },
+                ],
+                language: {
+                    "lengthMenu": "_MENU_ registros por página",
+                    "zeroRecords": "Nenhum registro encontrado",
+                    "info": "Exibindo _PAGE_ de _PAGES_",
+                    "infoEmpty": "Nenhum registro encontrado",
+                    "infoFiltered": "(Filtrado de _MAX_ registros)",
+                    "search": "Busca:",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    }
+                },
+                pagingType: "numbers"
+            });
+
+            atualizarGrid();
+        });
+    </script>
+}
+
