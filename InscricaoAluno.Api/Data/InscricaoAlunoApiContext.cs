@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using InscricaoAluno.Api.Models;
 
-namespace InscricaoAluno.Api.Models
+namespace InscricaoAluno.Api.Data
 {
     public class InscricaoAlunoApiContext : DbContext
     {

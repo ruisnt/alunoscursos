@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace InscricaoAluno.Api.Models
+namespace InscricaoAluno.Api.DTO
 {
     public class Inscricao
     {
@@ -12,6 +15,5 @@ namespace InscricaoAluno.Api.Models
         public int? Avaliacao { get; set; }
         public Curso Curso { get; set; }
         public Aluno Aluno { get; set; }
-        public bool Excluido { get; set; }
     }
 }

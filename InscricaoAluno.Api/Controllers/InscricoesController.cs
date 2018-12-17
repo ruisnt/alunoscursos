@@ -1,17 +1,17 @@
-﻿using System;
+﻿using InscricaoAluno.Api.Data;
+using InscricaoAluno.Api.DTO;
+using InscricaoAluno.Api.Mapeamento;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using InscricaoAluno.Api.Models;
 
 namespace InscricaoAluno.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class InscricoesController : ControllerBase
+    public class InscricoesController : ControllerBase, IMap
     {
         private readonly InscricaoAlunoApiContext _context;
 
@@ -19,8 +19,6 @@ namespace InscricaoAluno.Api.Controllers
         {
             _context = context;
         }
-
-
 
         // GET: api/Alunos
         [HttpGet]
@@ -31,17 +29,16 @@ namespace InscricaoAluno.Api.Controllers
                             on inscricao.idCurso equals curso.id
                         join aluno in _context.Aluno
                             on inscricao.idAluno equals aluno.id
-                        select new { aluno, curso, inscricao };
+                        select new Models.Join
+                        {
+                            Curso = curso,
+                            Inscricao = inscricao,
+                            Aluno = aluno
+                        };
 
             var lista = busca
                 .ToArray()
-                .Select(item =>
-                {
-                    var inscricao = item.inscricao;
-                    inscricao.Aluno = item.aluno;
-                    inscricao.Curso = item.curso;
-                    return inscricao;
-                });
+                .Select(this.Map);
 
             return lista;
         }
@@ -62,7 +59,7 @@ namespace InscricaoAluno.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(inscricao);
+            return Ok(this.Map(inscricao));
         }
 
         // PUT: api/Inscricoes/5
@@ -79,7 +76,7 @@ namespace InscricaoAluno.Api.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(inscricao).State = EntityState.Modified;
+            _context.Entry(this.Map(inscricao)).State = EntityState.Modified;
 
             try
             {
@@ -109,7 +106,7 @@ namespace InscricaoAluno.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Inscricao.Add(inscricao);
+            _context.Inscricao.Add(this.Map(inscricao));
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetInscricao", new { id = inscricao.id }, inscricao);

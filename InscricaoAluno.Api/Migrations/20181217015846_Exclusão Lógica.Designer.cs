@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InscricaoAluno.Api.Migrations
 {
     [DbContext(typeof(InscricaoAlunoApiContext))]
-    [Migration("20181106010812_Inicial")]
-    partial class Inicial
+    [Migration("20181217015846_Exclusão Lógica")]
+    partial class ExclusãoLógica
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,6 +30,8 @@ namespace InscricaoAluno.Api.Migrations
 
                     b.Property<string>("CPF");
 
+                    b.Property<bool>("Excluido");
+
                     b.Property<string>("Nome");
 
                     b.Property<string>("RG");
@@ -46,6 +48,8 @@ namespace InscricaoAluno.Api.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Descricao");
+
+                    b.Property<bool>("Excluido");
 
                     b.Property<string>("Nome");
 
@@ -67,6 +71,8 @@ namespace InscricaoAluno.Api.Migrations
                     b.Property<int?>("Avaliacao");
 
                     b.Property<int?>("Cursoid");
+
+                    b.Property<bool>("Excluido");
 
                     b.Property<DateTime>("Inicio");
 

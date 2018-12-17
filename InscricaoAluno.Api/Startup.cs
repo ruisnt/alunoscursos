@@ -1,4 +1,6 @@
-﻿using InscricaoAluno.Api.Models;
+﻿using AutoMapper;
+using InscricaoAluno.Api.Data;
+using InscricaoAluno.Api.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -26,6 +27,13 @@ namespace InscricaoAluno.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Aluno, DTO.Aluno>().ReverseMap();
+                cfg.CreateMap<Curso, DTO.Curso>().ReverseMap();
+                cfg.CreateMap<Inscricao, DTO.Inscricao>().ReverseMap();
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info
@@ -76,6 +84,7 @@ namespace InscricaoAluno.Api
             //if (env.IsDevelopment())
             //{
                 app.UseDeveloperExceptionPage();
+                Mapper.AssertConfigurationIsValid();
             //}
 
             app.UseSwagger();

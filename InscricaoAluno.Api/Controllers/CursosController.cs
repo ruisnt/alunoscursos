@@ -1,17 +1,17 @@
-﻿using System;
+﻿using InscricaoAluno.Api.Data;
+using InscricaoAluno.Api.Mapeamento;
+using InscricaoAluno.Api.DTO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using InscricaoAluno.Api.Models;
 
 namespace InscricaoAluno.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CursosController : ControllerBase
+    public class CursosController : ControllerBase, IMap
     {
         private readonly InscricaoAlunoApiContext _context;
 
@@ -24,7 +24,10 @@ namespace InscricaoAluno.Api.Controllers
         [HttpGet]
         public IEnumerable<Curso> GetCurso()
         {
-            return _context.Curso;
+            return _context
+                .Curso
+                .Where(item => !item.Excluido)
+                .Select(this.Map);
         }
 
         [HttpGet("{id}")]
@@ -42,7 +45,7 @@ namespace InscricaoAluno.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(curso);
+            return Ok(this.Map(curso));
         }
 
         [HttpGet("{id}/Inscricoes")]
@@ -53,22 +56,21 @@ namespace InscricaoAluno.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var busca = await (from curso in _context.Curso
-                    join inscricao in _context.Inscricao
-                        on curso.id equals inscricao.idCurso
-                    join aluno in _context.Aluno
-                        on inscricao.idAluno equals aluno.id
-                    where curso.id == id
-                    select new { curso, inscricao, aluno })
-                    .ToArrayAsync();
+            var busca = from curso in _context.Curso
+                join inscricao in _context.Inscricao
+                    on curso.id equals inscricao.idCurso
+                join aluno in _context.Aluno
+                    on inscricao.idAluno equals aluno.id
+                where curso.id == id
+                select new Models.Join
+                {
+                    Curso = curso,
+                    Inscricao = inscricao,
+                    Aluno = aluno
+                };
 
             var inscricoes = busca
-                .Select(item => {
-                    Inscricao inscricao = item.inscricao;
-                    inscricao.Aluno = item.aluno;
-                    inscricao.Curso = item.curso;
-                    return inscricao;
-                });
+                .Select(this.Map);
 
             if (!inscricoes.Any())
             {
@@ -92,7 +94,7 @@ namespace InscricaoAluno.Api.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(curso).State = EntityState.Modified;
+            _context.Entry(this.Map(curso)).State = EntityState.Modified;
 
             try
             {
@@ -122,7 +124,7 @@ namespace InscricaoAluno.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Curso.Add(curso);
+            _context.Curso.Add(this.Map(curso));
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCurso", new { id = curso.id }, curso);
@@ -146,15 +148,17 @@ namespace InscricaoAluno.Api.Controllers
             if (_context.Inscricao.Any(item => item.Termino.HasValue && item.idCurso == id))
                 return BadRequest("Não é possível remover um curso com inscrições ativas");
 
-            _context.Curso.Remove(curso);
+            curso.Excluido = true;
             await _context.SaveChangesAsync();
 
-            return Ok(curso);
+            return Ok(this.Map(curso));
         }
 
         private bool CursoExists(int id)
         {
             return _context.Curso.Any(e => e.id == id);
         }
+
+
     }
 }
