@@ -20,6 +20,32 @@ namespace InscricaoAluno.Api.Controllers
             _context = context;
         }
 
+
+
+        // GET: api/Alunos
+        [HttpGet]
+        public IEnumerable<Inscricao> Get()
+        {
+            var busca = from inscricao in _context.Inscricao
+                        join curso in _context.Curso
+                            on inscricao.idCurso equals curso.id
+                        join aluno in _context.Aluno
+                            on inscricao.idAluno equals aluno.id
+                        select new { aluno, curso, inscricao };
+
+            var lista = busca
+                .ToArray()
+                .Select(item =>
+                {
+                    var inscricao = item.inscricao;
+                    inscricao.Aluno = item.aluno;
+                    inscricao.Curso = item.curso;
+                    return inscricao;
+                });
+
+            return lista;
+        }
+
         // GET: api/Inscricoes/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetInscricao([FromRoute] int id)

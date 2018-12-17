@@ -144,6 +144,9 @@ namespace InscricaoAluno.Api.Controllers
                 return NotFound();
             }
 
+            if (_context.Inscricao.Any(item => !item.Termino.HasValue && item.idAluno == id))
+                return BadRequest("Não é possível remover aluno com inscrição ativa");
+
             _context.Aluno.Remove(aluno);
             await _context.SaveChangesAsync();
 

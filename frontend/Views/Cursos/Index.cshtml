@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-md-8 mb-2">
                     <label for="descricao">Descrição</label>
-                    <input name="descricao" type="text" class="form-control cpf" placeholder="Breve descrição do curso" required="required">
+                    <input name="descricao" type="text" class="form-control" placeholder="Breve descrição do curso" required="required">
                     <div class="invalid-feedback"></div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
 
 <div class="card mb-3">
     <div class="card-header">
-        <h3><i class="fa fa-table"></i> Alunos</h3>
+        <h3><i class="fa fa-table"></i> Cursos</h3>
     </div>
 
     <div class="card-body">
@@ -60,13 +60,18 @@
         var url = "http://alunoscursos.qualifica.pro.br/api/cursos/";
 
         function removerRegistro(id) {
+            event.preventDefault();
+
             if (!confirm("Deseja realmente remover este item?"))
                 return;
 
             $.ajax({
                 url: url + id,
                 type: 'DELETE'
-            }).done(atualizarGrid);
+            }).done(atualizarGrid)
+            .fail(function (erro) {
+                alert(erro.responseText);
+            });
         }
         function resetarValidacao(form) {
             form.find(".is-invalid").removeClass("is-invalid");

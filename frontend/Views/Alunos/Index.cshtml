@@ -58,13 +58,18 @@
         var url = "http://alunoscursos.qualifica.pro.br/api/alunos/";
 
         function removerRegistro(id) {
+            event.preventDefault();
+
             if (!confirm("Deseja realmente remover este item?"))
                 return;
 
             $.ajax({
                 url: url + id,
                 type: 'DELETE'
-            }).done(atualizarGrid);
+            }).done(atualizarGrid)
+            .fail(function(erro){
+                alert(erro.responseText);
+            });
         }
         function resetarValidacao(form) {
             form.find(".is-invalid").removeClass("is-invalid");

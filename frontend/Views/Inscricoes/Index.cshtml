@@ -23,19 +23,19 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 mb-2">
+                <div class="col-md-3 mb-2">
                     <label for="inicio">Início</label>
                     <input name="inicio" type="text" class="form-control data" placeholder="Início da inscrição" required="required">
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="col-md-4 mb-2">
+                <div class="col-md-3 mb-2">
                     <label for="termino">Término</label>
                     <input name="termino" type="text" class="form-control data" placeholder="Término da inscrição">
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="col-md-4 mb-2">
+                <div class="col-md-2 mb-2">
                     <label for="avaliacao">Avaliação</label>
-                    <input name="avaliacao" type="text" class="form-control inteiro" placeholder="Avaliação" required="required">
+                    <input name="avaliacao" type="text" class="form-control inteiro" placeholder="Avaliação">
                     <div class="invalid-feedback"></div>
                 </div>
             </div>
@@ -72,6 +72,8 @@
         var urlCursos = "http://alunoscursos.qualifica.pro.br/api/cursos/";
 
         function removerRegistro(id) {
+            event.preventDefault();
+
             if (!confirm("Deseja realmente remover este item?"))
                 return;
 
@@ -118,6 +120,9 @@
                     endereco += objeto.id;
                 }
 
+                objeto.inicio = formatarDataEnvio(objeto.inicio);
+                objeto.termino = formatarDataEnvio(objeto.termino);
+
                 $.ajax({
                     url: endereco,
                     type: metodo,
@@ -135,28 +140,40 @@
             }
         }
 
+
+        function formatarDataEnvio(data) {
+            if (!data)
+                return null;
+
+            return data.substring(6, 10)
+                + '-'
+                + data.substring(3, 5)
+                + '-'
+                + data.substring(0, 2);
+        }
+
         function validacao(form, entidade) {
 
             var valido = true;
 
-            if (!entidade.nome) {
-                var controle = form.find("[name=nome]");
+            if (!entidade.idAluno) {
+                var controle = form.find("[name=idAluno]");
                 controle.addClass("is-invalid");
-                controle.next(".invalid-feedback").html("Nome deve ser informado");
+                controle.next(".invalid-feedback").html("Aluno deve ser informado");
                 valido = false;
             }
 
-            if (!entidade.cpf) {
-                var controle = form.find("[name=cpf]");
+            if (!entidade.idCurso) {
+                var controle = form.find("[name=idCurso]");
                 controle.addClass("is-invalid");
-                controle.next(".invalid-feedback").html("CPF deve ser informado");
+                controle.next(".invalid-feedback").html("Curso deve ser informado");
                 valido = false;
             }
 
-            if (!entidade.rg) {
-                var controle = form.find("[name=rg]");
+            if (!entidade.inicio) {
+                var controle = form.find("[name=inicio]");
                 controle.addClass("is-invalid");
-                controle.next(".invalid-feedback").html("RG deve ser informado");
+                controle.next(".invalid-feedback").html("Início deve ser informado");
                 valido = false;
             }
 
@@ -214,24 +231,24 @@
 
                 })
 
-            cb = $("select[name=idCurso]");
+            var cbCurso = $("select[name=idCurso]");
 
-            cb.children().remove();
+            cbCurso.children().remove();
 
-            $.get(urlAluno)
+            $.get(urlCursos)
                 .done(function (data) {
 
                     $("<option />", {
                         value: "",
                         html: "--SELECIONE--",
                         selected: "selected"
-                    }).appendTo(cb);
+                    }).appendTo(cbCurso);
 
                     $.each(data, function (i, item) {
                         $("<option />", {
                             value: item.id,
                             html: item.nome
-                        }).appendTo(cb);
+                        }).appendTo(cbCurso);
                     });
 
                 })
@@ -270,6 +287,7 @@
 
         $(document).ready(function () {
             $('.data').mask('00/00/0000');
+            $('.inteiro').mask('#0');
 
             $(".menu").removeClass("active");
             $(".inscricoes").addClass("active");
@@ -293,9 +311,8 @@
                             if (type === 'display') {
 
                                 var editar = '<a href="#" title="Editar" onclick="editarRegistro(' + data + ');" class="fa fa-pencil">&nbsp;</a>';
-                                var excluir = '<a href="#" title="Excluir" onclick="removerRegistro(' + data + ');" class="fa fa-remove">&nbsp;</a>';
 
-                                data = editar + '&nbsp;' + excluir;
+                                data = editar;
                             }
 
                             return data;
@@ -303,17 +320,58 @@
                     },
                     { title: "id", data: "id", width: "20px", },
                     {
-                        title: "Nome",
-                        data: "nome"
+                        title: "Aluno",
+                        data: "aluno",
+                        render: function (data, type) {
+
+                            if(!data)
+                                return data;
+
+                            return data.nome;
+                        }
                     },
                     {
-                        title: "CPF",
-                        data: "cpf"
+                        title: "Curso",
+                        data: "curso",
+                        render: function (data, type) {
+
+                            if(!data)
+                                return data;
+
+                            return data.nome;
+                        }
                     },
                     {
-                        title: "RG",
-                        data: "rg"
+                        title: "Início",
+                        data: "inicio",
+                        render: function (data, type) {
+
+                            if(!data)
+                                return data;
+
+                            if (type == 'display') {
+                                data = $.format.date(data, "dd/MM/yyyy")
+                            }
+
+                            return data;
+                        }
                     },
+                    {
+                        title: "Término",
+                        data: "termino",
+                        render: function (data, type) {
+
+                            if(!data)
+                                return data;
+
+                            if (type == 'display') {
+                                data = $.format.date(data, "dd/MM/yyyy")
+                            }
+
+                            return data;
+                        }
+                    },
+                    { title: "Avaliação", data: "avaliacao" }
                 ],
                 language: {
                     "lengthMenu": "_MENU_ registros por página",
