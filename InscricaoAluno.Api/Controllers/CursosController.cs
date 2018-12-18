@@ -22,11 +22,11 @@ namespace InscricaoAluno.Api.Controllers
 
         // GET: api/Cursos
         [HttpGet]
-        public IEnumerable<Curso> GetCurso()
+        public IEnumerable<Curso> GetCurso(bool? Encerrados)
         {
             return _context
                 .Curso
-                .Where(item => !item.Excluido)
+                .Where(item => item.Excluido == Encerrados.GetValueOrDefault())
                 .Select(this.Map);
         }
 
@@ -145,7 +145,7 @@ namespace InscricaoAluno.Api.Controllers
                 return NotFound();
             }
 
-            if (_context.Inscricao.Any(item => item.Termino.HasValue && item.idCurso == id))
+            if (_context.Inscricao.Any(item => !item.Termino.HasValue && item.idCurso == id))
                 return BadRequest("Não é possível remover um curso com inscrições ativas");
 
             curso.Excluido = true;

@@ -22,11 +22,11 @@ namespace InscricaoAluno.Api.Controllers
 
         // GET: api/Alunos
         [HttpGet]
-        public IEnumerable<Aluno> GetAluno()
+        public IEnumerable<Aluno> GetAluno(bool? Encerrados)
         {
             return _context
                 .Aluno
-                .Where(item => !item.Excluido)
+                .Where(item => item.Excluido == Encerrados.GetValueOrDefault())
                 .Select(this.Map);
         }
 
